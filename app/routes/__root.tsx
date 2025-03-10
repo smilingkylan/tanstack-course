@@ -6,6 +6,7 @@ import {
   HeadContent,
   Scripts,
   Link,
+  useNavigate,
 } from '@tanstack/react-router'
 // ?url means not bundled but loaded remotely
 import appCss from '@/app/styles/globals.css?url'
@@ -19,10 +20,18 @@ import poppins700 from '@fontsource/poppins/700.css?url';
 import poppins800 from '@fontsource/poppins/800.css?url';
 import poppins900 from '@fontsource/poppins/900.css?url';
 import { ChartColumnBigIcon } from 'lucide-react';
-import { ClerkProvider, SignedIn, SignedOut, SignInButton, SignOutButton, SignUpButton } from '@clerk/tanstack-start';
+import { ClerkProvider, SignedIn, SignedOut, SignInButton, SignOutButton, SignUpButton, UserButton } from '@clerk/tanstack-start';
 import { Button } from '@/components/ui/button';
+import { getSignedInUserId } from '@/data/getSignedInUserId';
 
 export const Route = createRootRoute({
+  notFoundComponent: () => {
+    return <div className="text-3xl text-center py-10 text-muted-foreground">Oops - Page Not Found</div>
+  },
+  beforeLoad: async () => {
+    const userId = await getSignedInUserId()
+    return { userId}
+  },
   head: () => ({
     meta: [
       {
@@ -80,6 +89,7 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+  const navigate = useNavigate()
   return (
     <ClerkProvider>
     <html>
@@ -91,14 +101,27 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
           <Link to="/" className="flex gap-1 items-center font-bold text-2xl">
             <ChartColumnBigIcon className="text-lime-500" /> TanTracker
           </Link>
-          <div>
+          <div className="text-white flex items-center">
             <SignedOut>
-              <Button asChild variant='link'><SignInButton /></Button>
-              <div className="w-[1px] h-8 bg-zinc-700">
-                <Button asChild variant='link'><SignUpButton /></Button>
-              </div>
+              <Button asChild variant='link' className="text-white"><SignInButton /></Button>
+              <div className="w-[1px] h-8 bg-zinc-700" />
+                <Button asChild variant='link' className="text-white"><SignUpButton /></Button>
             </SignedOut>
             <SignedIn>
+              <UserButton
+                showName
+                appearance={{
+                  elements: {
+                    userButtonOuterIdentifier: { color: 'white' },
+                  }
+                }}
+              >
+                <UserButton.MenuItems>
+                  <UserButton.Action label="Dashboard" labelIcon={<ChartColumnBigIcon size={16} />} onClick={() => {
+                    navigate({to: '/dashboard'})
+                  }} />
+                </UserButton.MenuItems>
+              </UserButton>
               <Button asChild variant='link'><SignOutButton /></Button>
             </SignedIn>
           </div>
