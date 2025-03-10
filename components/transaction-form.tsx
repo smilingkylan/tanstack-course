@@ -31,9 +31,14 @@ export const TransactionForm = () => {
       transactionDate: new Date(),
     }
   })
+
+  const handleSubmit = (data: z.infer<typeof transactionFormSchema>) => {
+    console.log(data)
+  }
+
   return (
     <Form {...form}>
-      <form>
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
         <fieldset disabled={form.formState.isSubmitting} className="grid grid-cols-2 gap-y-5 gap-x-2">
           <FormField
             control={form.control} // intellisense and type safety
@@ -87,29 +92,29 @@ export const TransactionForm = () => {
           />
 
           <FormField
-            control={form.control} // intellisense and type safety
+            control={form.control}
             name="transactionDate"
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>
-                    Transaction Date
-                  </FormLabel>
+                  <FormLabel>Transaction Date</FormLabel>
                   <FormControl>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <div>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                          </Button>
-                        </div>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                        </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0">
                         <Calendar
@@ -117,16 +122,18 @@ export const TransactionForm = () => {
                           selected={field.value}
                           onSelect={field.onChange}
                           initialFocus
-                          disabled={{ after: new Date()}}
+                          disabled={{
+                            after: new Date(),
+                          }}
                         />
                       </PopoverContent>
                     </Popover>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-              )
+              );
             }}
-          />  
+          />
 
           <FormField
             control={form.control} // intellisense and type safety
@@ -135,7 +142,7 @@ export const TransactionForm = () => {
               return (
                 <FormItem>
                   <FormLabel>
-                    Category
+                    Amount
                   </FormLabel>
                   <FormControl>
                     <Input {...field} type="number" step={0.01} />
@@ -145,10 +152,9 @@ export const TransactionForm = () => {
               )
             }}
           />          
-
         </fieldset>
 
-        <fieldset disabled={form.formState.isSubmitting}>
+        <fieldset disabled={form.formState.isSubmitting} className="mt-5 flex flex-col gap-5">
           <FormField
             control={form.control} // intellisense and type safety
             name="transactionDescription"
