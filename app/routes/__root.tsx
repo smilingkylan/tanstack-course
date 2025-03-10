@@ -7,7 +7,7 @@ import {
   Scripts,
 } from '@tanstack/react-router'
 // ?url means not bundled but loaded remotely
-import appCss from '@/styles/app.css?url'
+import appCss from '@/app/styles/globals.css?url'
 
 export const Route = createRootRoute({
   head: () => ({
