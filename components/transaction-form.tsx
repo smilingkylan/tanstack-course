@@ -8,19 +8,29 @@ import { Calendar } from "./ui/calendar"
 import { Button } from "./ui/button"
 import { CalendarIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { format } from "date-fns"
+import { addDays, format } from "date-fns"
 import { Input } from "./ui/input"
+import { categoriesTable } from "@/db/schema"
 
 
-const transactionFormSchema = z.object({
+export const transactionFormSchema = z.object({
   transactionType: z.enum(['income', 'expense']),
   categoryId: z.coerce.number().positive("Please select a category"),
-  transactionDate: z.date().max(new Date(), "Transaction date cannot be in the future"),
+  transactionDate: z.date().max(addDays(new Date(), 1), "Transaction date cannot be in the future"),
   amount: z.coerce.number().positive("Amount must be greater than 0"),
-  transactionDescription: z.string().min(3, "Description must contain at least 3 characters").max(300, "Description must be less than 300 characters"),
+  transactionDescription: z
+    .string()
+    .min(3, "Description must contain at least 3 characters")
+    .max(300, "Description must be less than 300 characters"),
 })
 
-export const TransactionForm = () => {
+export const TransactionForm = ({
+  categories,
+  onSubmit
+}: {
+  categories: (typeof categoriesTable.$inferSelect)[],
+  onSubmit: (data: z.infer<typeof transactionFormSchema>) => Promise<void>
+}) => {
   const form = useForm<z.infer<typeof transactionFormSchema>>({
     resolver: zodResolver(transactionFormSchema),
     defaultValues: {
@@ -32,13 +42,11 @@ export const TransactionForm = () => {
     }
   })
 
-  const handleSubmit = (data: z.infer<typeof transactionFormSchema>) => {
-    console.log(data)
-  }
+  const filteredCategories = categories.filter(category => category.type === form.getValues('transactionType'))
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <fieldset disabled={form.formState.isSubmitting} className="grid grid-cols-2 gap-y-5 gap-x-2">
           <FormField
             control={form.control} // intellisense and type safety
@@ -81,7 +89,11 @@ export const TransactionForm = () => {
                         <SelectValue placeholder="Category" />
                       </SelectTrigger>
                       <SelectContent>
-
+                        {filteredCategories.map(category => (
+                          <SelectItem key={category.id} value={category.id.toString()}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -100,7 +112,7 @@ export const TransactionForm = () => {
                   <FormLabel>Transaction Date</FormLabel>
                   <FormControl>
                     <Popover>
-                      <PopoverTrigger asChild>
+                      <PopoverTrigger>
                         <Button
                           variant={"outline"}
                           className={cn(
