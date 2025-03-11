@@ -112,7 +112,7 @@ export const TransactionForm = ({
                   <FormLabel>Transaction Date</FormLabel>
                   <FormControl>
                     <Popover>
-                      <PopoverTrigger>
+                      <PopoverTrigger asChild>
                         <Button
                           variant={"outline"}
                           className={cn(

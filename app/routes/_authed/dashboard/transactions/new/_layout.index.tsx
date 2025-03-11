@@ -1,12 +1,13 @@
 import { TransactionForm } from '@/components/transaction-form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getCategories } from '@/data/getCategories'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { z } from 'zod'
 import { transactionFormSchema } from '@/components/transaction-form'
 import { createTransaction } from '@/data/createTransaction'
-import { date } from 'drizzle-orm/mysql-core'
 import { formatDate } from 'date-fns'
+import { toast } from 'sonner'
+
 
 export const Route = createFileRoute('/_authed/dashboard/transactions/new/_layout/')({
   component: RouteComponent,
@@ -20,6 +21,7 @@ export const Route = createFileRoute('/_authed/dashboard/transactions/new/_layou
 
 function RouteComponent() {
   const { categories } = Route.useLoaderData()
+  const navigate =  useNavigate()
 
   const handleSubmit = async (data: z.infer<typeof transactionFormSchema>) => {
     console.log('handleSubmit', data)
@@ -33,6 +35,14 @@ function RouteComponent() {
       }
     })
     console.log('transaction', transaction)
+    toast.success('Success')
+    navigate({
+      to: '/dashboard/transactions',
+      search: {
+        month: data.transactionDate.getMonth() + 1,
+        year: data.transactionDate.getFullYear()
+      }
+    })
   }
 
   return (
