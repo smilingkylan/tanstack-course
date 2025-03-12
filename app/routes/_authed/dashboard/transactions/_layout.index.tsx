@@ -46,6 +46,6 @@ function RouteComponent() {
   const { month, year ,yearsRange, transactions } = Route.useLoaderData()
   console.log('transactions', transactions)
   return (
-    <AllTransactions month={month} year={year} yearsRange={yearsRange} />
+    <AllTransactions transactions={transactions} month={month} year={year} yearsRange={yearsRange} />
   )
 }
