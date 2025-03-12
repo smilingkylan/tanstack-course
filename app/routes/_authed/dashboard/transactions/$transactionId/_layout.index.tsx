@@ -1,23 +1,29 @@
 import { TransactionForm } from '@/components/transaction-form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getCategories } from '@/data/getCategories';
+import { getTransaction } from '@/data/getTransaction';
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
   '/_authed/dashboard/transactions/$transactionId/_layout/',
 )({
   component: RouteComponent,
+  errorComponent: ({ error }) => {
+    return <div className="text-3xl text-muted-foreground">Transaction not found</div>
+  },
   loader: async ({ params }) => {
-    const [categories] = await Promise.all([
+    const { transactionId } = params
+    const [categories, transaction] = await Promise.all([
       getCategories(),
+      getTransaction({ data: { transactionId: Number(transactionId) } })
     ]);
 
-    // if (!transaction) {
-      // throw new Error("Transaction not found");
-    // }
+    if (!transaction) {
+      throw new Error("Transaction not found");
+    }
 
     return {
-      // transaction,
+      transaction,
       categories,
     };
   },
@@ -25,6 +31,8 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { categories, transaction } = Route.useLoaderData()
+  console.log('categories', categories)
+  console.log('transaction', transaction)
   const handleSubmit = () => {
 
   }
@@ -34,7 +42,17 @@ function RouteComponent() {
         <CardTitle>Edit Transaction</CardTitle>
       </CardHeader>
       <CardContent>
-        <TransactionForm categories={categories} onSubmit={handleSubmit} />
+        <TransactionForm
+          categories={categories}
+          onSubmit={handleSubmit}
+          defaultValues={{
+            amount: Number(transaction.amount),
+            categoryId: Number(transaction.categoryId),
+            transactionDate: new Date(transaction.transactionDate),
+            description: transaction.description,
+            transactionType: categories.find(category => category.id === transaction.categoryId)?.type as 'income' | 'expense'
+          }}
+        />
       </CardContent>
     </Card>    
   )
