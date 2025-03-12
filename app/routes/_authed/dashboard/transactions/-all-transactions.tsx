@@ -119,7 +119,7 @@ export const AllTransactions = ({
                           })
                         }}
                         to={`/dashboard/transactions/${transaction.id}`}
-                        >
+                      >
                           <Pencil />
                         </Link>
                       </Button>
