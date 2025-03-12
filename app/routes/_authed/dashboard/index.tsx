@@ -42,7 +42,7 @@ function RouteComponent() {
   return (
     <div className="max-w-screen-xl mx-auto py-5">
       <h1 className="text-4xl font-semibold pb-5">Dashboard</h1>
-      <Cashflow year={cfyear} yearsRange={yearsRange} />
+      <Cashflow year={cfyear} yearsRange={yearsRange} annualCashFlow={cashflow} />
       <RecentTransactions transactions={transactions} />
     </div>
   )

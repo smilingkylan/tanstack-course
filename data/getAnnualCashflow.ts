@@ -29,7 +29,7 @@ export const getAnnualCashflow = createServerFn({
   const annualCashFlow: {
     month: number,
     income: number,
-    expense: number
+    expenses: number
   }[] = []
 
   for (let i = 1; i < 12; i++) {
@@ -37,7 +37,7 @@ export const getAnnualCashflow = createServerFn({
     annualCashFlow.push({
       month: i,
       income: Number(monthlyCashFlow?.totalIncome || 0),
-      expense: Number(monthlyCashFlow?.totalExpenses || 0)
+      expenses: Number(monthlyCashFlow?.totalExpenses || 0)
     })
   }
 
