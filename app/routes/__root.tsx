@@ -9,6 +9,7 @@ import {
   useNavigate,
 } from '@tanstack/react-router'
 // ?url means not bundled but loaded remotely
+import { ThemeProvider } from "@/components/theme-provider"
 import appCss from '@/app/styles/globals.css?url'
 import poppins100 from '@fontsource/poppins/100.css?url';
 import poppins200 from '@fontsource/poppins/200.css?url';
@@ -94,45 +95,47 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   const navigate = useNavigate()
   return (
     <ClerkProvider>
-    <html>
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <nav className="bg-primary p-4 h-20 text-white flex items-center justify-between">
-          <Link to="/" className="flex gap-1 items-center font-bold text-2xl">
-            <ChartColumnBigIcon className="text-lime-500" /> TanTracker
-          </Link>
-          <div className="text-white flex items-center">
-            <SignedOut>
-              <Button asChild variant='link' className="text-white"><SignInButton /></Button>
-              <div className="w-[1px] h-8 bg-zinc-700" />
-                <Button asChild variant='link' className="text-white"><SignUpButton /></Button>
-            </SignedOut>
-            <SignedIn>
-              <UserButton
-                showName
-                appearance={{
-                  elements: {
-                    userButtonOuterIdentifier: { color: 'white' },
-                  }
-                }}
-              >
-                <UserButton.MenuItems>
-                  <UserButton.Action label="Dashboard" labelIcon={<ChartColumnBigIcon size={16} />} onClick={() => {
-                    navigate({to: '/dashboard'})
-                  }} />
-                </UserButton.MenuItems>
-              </UserButton>
-              <Button asChild variant='link'><SignOutButton /></Button>
-            </SignedIn>
-          </div>
-        </nav>
-        {children}
-        <Toaster />
-        <Scripts />
-      </body>
-    </html>
+        <html>
+          <head>
+            <HeadContent />
+          </head>
+          <body>
+            <ThemeProvider defaultTheme="dark" storageKey="shadcn-ui-theme">
+              <nav className="bg-primary p-4 h-20 text-white flex items-center justify-between">
+                <Link to="/" className="flex gap-1 items-center font-bold text-2xl">
+                  <ChartColumnBigIcon className="text-lime-500" /> TanTracker
+                </Link>
+                <div className="text-white flex items-center">
+                  <SignedOut>
+                    <Button asChild variant='link' className="text-white"><SignInButton /></Button>
+                    <div className="w-[1px] h-8 bg-zinc-700" />
+                      <Button asChild variant='link' className="text-white"><SignUpButton /></Button>
+                  </SignedOut>
+                  <SignedIn>
+                    <UserButton
+                      showName
+                      appearance={{
+                        elements: {
+                          userButtonOuterIdentifier: { color: 'white' },
+                        }
+                      }}
+                    >
+                      <UserButton.MenuItems>
+                        <UserButton.Action label="Dashboard" labelIcon={<ChartColumnBigIcon size={16} />} onClick={() => {
+                          navigate({to: '/dashboard'})
+                        }} />
+                      </UserButton.MenuItems>
+                    </UserButton>
+                    <Button asChild variant='link'><SignOutButton /></Button>
+                  </SignedIn>
+                </div>
+              </nav>
+              {children}
+              <Toaster />
+              <Scripts />
+            </ThemeProvider>
+          </body>
+        </html>
     </ClerkProvider>
   )
 }
