@@ -1,6 +1,6 @@
 import { SignedIn, SignedOut, SignInButton, SignOutButton, SignUpButton, UserButton } from '@clerk/tanstack-start';
 import { Button } from "./ui/button"
-import { ChartColumnBigIcon } from "lucide-react"
+import { LightbulbIcon, ChartColumnBigIcon } from "lucide-react"
 import { useNavigate, Link } from "@tanstack/react-router";
 import { useTheme } from './theme-provider';
 
@@ -12,7 +12,7 @@ export const Header = () => {
   return (
     <nav className="bg-background p-4 h-20 text-foreground flex items-center justify-between">
       <Link to="/" className="flex gap-1 items-center font-bold text-2xl">
-        <ChartColumnBigIcon className="text-lime-500" /> TanTracker
+        Revel<LightbulbIcon className="text-lime-500" />
       </Link>
       <div className="text-white flex items-center">
         <SignedOut>
