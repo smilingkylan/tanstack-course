@@ -25,6 +25,8 @@ import { ClerkProvider, SignedIn, SignedOut, SignInButton, SignOutButton, SignUp
 import { Button } from '@/components/ui/button';
 import { getSignedInUserId } from '@/data/getSignedInUserId';
 import { Toaster } from '@/components/ui/sonner';
+import { Header } from '@/components/header';
+import { dark } from '@clerk/themes'
 
 export const Route = createRootRoute({
   pendingMs: 0,
@@ -92,50 +94,21 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-  const navigate = useNavigate()
   return (
-    <ClerkProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="shadcn-ui-theme">
+      <ClerkProvider appearance={{ baseTheme: dark }}>
         <html>
           <head>
             <HeadContent />
           </head>
           <body>
-            <ThemeProvider defaultTheme="dark" storageKey="shadcn-ui-theme">
-              <nav className="bg-primary p-4 h-20 text-white flex items-center justify-between">
-                <Link to="/" className="flex gap-1 items-center font-bold text-2xl">
-                  <ChartColumnBigIcon className="text-lime-500" /> TanTracker
-                </Link>
-                <div className="text-white flex items-center">
-                  <SignedOut>
-                    <Button asChild variant='link' className="text-white"><SignInButton /></Button>
-                    <div className="w-[1px] h-8 bg-zinc-700" />
-                      <Button asChild variant='link' className="text-white"><SignUpButton /></Button>
-                  </SignedOut>
-                  <SignedIn>
-                    <UserButton
-                      showName
-                      appearance={{
-                        elements: {
-                          userButtonOuterIdentifier: { color: 'white' },
-                        }
-                      }}
-                    >
-                      <UserButton.MenuItems>
-                        <UserButton.Action label="Dashboard" labelIcon={<ChartColumnBigIcon size={16} />} onClick={() => {
-                          navigate({to: '/dashboard'})
-                        }} />
-                      </UserButton.MenuItems>
-                    </UserButton>
-                    <Button asChild variant='link'><SignOutButton /></Button>
-                  </SignedIn>
-                </div>
-              </nav>
+              <Header />
               {children}
               <Toaster />
               <Scripts />
-            </ThemeProvider>
           </body>
         </html>
     </ClerkProvider>
+            </ThemeProvider>
   )
 }
