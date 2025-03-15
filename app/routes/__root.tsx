@@ -25,6 +25,8 @@ import { getSignedInUserId } from '@/data/getSignedInUserId';
 import { Toaster } from '@/components/ui/sonner';
 import { Header } from '@/components/header';
 import { dark } from '@clerk/themes'
+import { AppSidebar } from '@/components/app-sidebar';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 
 export const Route = createRootRoute({
   pendingMs: 0,
@@ -95,18 +97,30 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="shadcn-ui-theme">
       <ClerkProvider appearance={{ baseTheme: dark }}>
-        <html>
-          <head>
-            <HeadContent />
-          </head>
-          <body>
-              <Header />
-              {children}
-              <Toaster />
-              <Scripts />
-          </body>
-        </html>
-    </ClerkProvider>
-            </ThemeProvider>
+        <SidebarProvider>
+          <html className="h-full w-full">
+            <head>
+              <HeadContent />
+            </head>
+            <body className="flex flex-row flex-1 w-full">
+              <nav id="revel8-sidebar">
+                <AppSidebar />
+              </nav>
+              <div id="revel8-main" className="w-full">
+                <nav id="revel8-header">
+                  <Header />
+                </nav>
+                <main id="revel8-content" className="flex flex-1 flex-col p-4">
+                  {/* <SidebarTrigger /> */}
+                  {children}
+                  <Toaster />
+                  <Scripts />
+                </main>
+              </div>
+            </body>
+          </html>
+        </SidebarProvider>
+      </ClerkProvider>
+    </ThemeProvider>
   )
 }
