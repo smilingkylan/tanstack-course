@@ -102,7 +102,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
             <head>
               <HeadContent />
             </head>
-            <body className="flex flex-row flex-1 w-full">
+            <body className="flex flex-row flex-1 w-full h-full">
               <nav id="revel8-sidebar">
                 <AppSidebar />
               </nav>
