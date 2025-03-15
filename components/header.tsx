@@ -11,7 +11,9 @@ export const Header = () => {
   const navigate = useNavigate()
   const isDark = theme === 'dark'
   return (
-    <nav className="bg-background p-4 h-20 text-foreground flex items-center justify-between w-full">
+    <nav
+      className="bg-background px-4 py-2 h-16 text-foreground flex items-center justify-between w-full border-b border-zinc-200 dark:border-zinc-700"
+    >
       <Link to="/" className="flex gap-1 items-center font-bold text-2xl">
         Revel<LightbulbIcon className="text-lime-500" />
       </Link>
@@ -20,7 +22,7 @@ export const Header = () => {
             <MoonIcon className="h-4 w-4 dark:text-white text-gray-700" />
             <Switch
               checked={isDark}
-              className="data-[state=checked]:bg-white data-[state=unchecked]:bg-gray-700"
+              className="data-[state=checked]:bg-white data-[state=unchecked]:bg-gray-700 hover:cursor-pointer"
               onCheckedChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             />
         </div>
